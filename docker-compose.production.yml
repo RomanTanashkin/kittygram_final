@@ -1,5 +1,3 @@
-version: '3.9'
-
 volumes:
   pg_data:
   static:
@@ -12,13 +10,19 @@ services:
     restart: always
     volumes:
       - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     image: ${DOCKERHUB_USERNAME}/kittygram_backend:latest
     env_file: .env
     restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - static:/backend_static
       - media:/app/media
