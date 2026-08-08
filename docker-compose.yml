@@ -23,7 +23,7 @@ services:
 
   frontend:
     build: ./frontend/
-    command: cp -r /app/build/. /static/
+    command: sh -c "cp -r /app/build/. /static/ && cp -r /app/build/static/. /static/"
     volumes:
       - static:/static
 
